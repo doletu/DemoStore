@@ -9,6 +9,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DemoStore_Admin.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace DemoStore_Admin.Controllers
 {
@@ -17,17 +20,31 @@ namespace DemoStore_Admin.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+         private ApplicationRoleManager _roleManager;
+
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager,ApplicationRoleManager roleManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            RoleManager = roleManager;
+           
         }
-
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
         public ApplicationSignInManager SignInManager
         {
             get
@@ -139,6 +156,17 @@ namespace DemoStore_Admin.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            List<SelectListItem> list = new List<SelectListItem>();
+            foreach (var Role in RoleManager.Roles)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Value=Role.Id,Text=Role.Name
+                });
+
+            }
+            ViewBag.Roles = list;
+
             return View();
         }
 
@@ -149,13 +177,17 @@ namespace DemoStore_Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+           
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, Name=model.Name, DateCreated=DateTime.Now, PhoneNumber=model.PhoneNumber };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                   await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
+                    ApplicationRole rolename = await RoleManager.FindByIdAsync(model.Role);
+                    await this.UserManager.AddToRoleAsync(user.Id, rolename.Name);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
@@ -171,6 +203,11 @@ namespace DemoStore_Admin.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+
+       
+
+
 
         //
         // GET: /Account/ConfirmEmail
@@ -479,7 +516,23 @@ namespace DemoStore_Admin.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+
+
+          
+
+
+
         }
+
+
         #endregion
+
+
+
+
+
+        
+
+
     }
 }

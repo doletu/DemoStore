@@ -1,0 +1,2 @@
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoAPi\obj\Debug\DemoAPi.csprojAssemblyReference.cache
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoAPi\obj\Debug\DemoAPi.csproj.CoreCompileInputs.cache

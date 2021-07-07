@@ -108,3 +108,7 @@ C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\obj\Debug\DemoStore.dll
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\obj\Debug\DemoStore.pdb
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\obj\Debug\DemoStore.Migrations.InitialCreate.resources
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\obj\Debug\DemoStore.csproj.GenerateResource.cache
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\bin\PagedList.dll
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\bin\PagedList.Mvc.dll
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\bin\PagedList.xml
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore\bin\PagedList.Mvc.xml
