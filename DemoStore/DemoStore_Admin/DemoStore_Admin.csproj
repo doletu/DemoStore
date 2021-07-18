@@ -228,34 +228,45 @@
     <Compile Include="Migrations\202107060258217_ApplyProduct.Designer.cs">
       <DependentUpon>202107060258217_ApplyProduct.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107060843284_Role.cs" />
-    <Compile Include="Migrations\202107060843284_Role.Designer.cs">
-      <DependentUpon>202107060843284_Role.cs</DependentUpon>
+    <Compile Include="Migrations\202107100819186_FixBrand.cs" />
+    <Compile Include="Migrations\202107100819186_FixBrand.Designer.cs">
+      <DependentUpon>202107100819186_FixBrand.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107060856382_Role1.cs" />
-    <Compile Include="Migrations\202107060856382_Role1.Designer.cs">
-      <DependentUpon>202107060856382_Role1.cs</DependentUpon>
+    <Compile Include="Migrations\202107120144556_ProductImage.cs" />
+    <Compile Include="Migrations\202107120144556_ProductImage.Designer.cs">
+      <DependentUpon>202107120144556_ProductImage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107060908350_Role2.cs" />
-    <Compile Include="Migrations\202107060908350_Role2.Designer.cs">
-      <DependentUpon>202107060908350_Role2.cs</DependentUpon>
+    <Compile Include="Migrations\202107120306319_fix.cs" />
+    <Compile Include="Migrations\202107120306319_fix.Designer.cs">
+      <DependentUpon>202107120306319_fix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107130816332_fixProductMultipleImage.cs" />
+    <Compile Include="Migrations\202107130816332_fixProductMultipleImage.Designer.cs">
+      <DependentUpon>202107130816332_fixProductMultipleImage.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Product\Brand.cs" />
-    <Compile Include="Models\Product\Category.cs" />
-    <Compile Include="Models\Product\Order.cs" />
-    <Compile Include="Models\Product\OrderDetail.cs" />
-    <Compile Include="Models\Product\Product.cs" />
+    <Compile Include="Models\Prduct\Brand.cs" />
+    <Compile Include="Models\Prduct\Category.cs" />
+    <Compile Include="Models\Prduct\Order.cs" />
+    <Compile Include="Models\Prduct\OrderDetail.cs" />
+    <Compile Include="Models\Prduct\Product.cs" />
+    <Compile Include="Models\Prduct\ProductImages.cs" />
+    <Compile Include="Models\Prduct\UserValidate.cs" />
     <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\ViewMainPageModel.cs" />
+    <Compile Include="Models\ViewModels\BrandViewModel.cs" />
+    <Compile Include="Models\ViewModels\CategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\OrderViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProductViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Asset\jquery-3.2.1.min.js" />
     <Content Include="Asset\scripts.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -323,7 +334,6 @@
     <Content Include="Views\ViewMainPageModels\Edit.cshtml" />
     <Content Include="Views\ViewMainPageModels\Index.cshtml" />
     <Content Include="Views\Categories\Create.cshtml" />
-    <Content Include="Views\Categories\Delete.cshtml" />
     <Content Include="Views\Categories\Details.cshtml" />
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
@@ -352,10 +362,16 @@
     <Content Include="Views\RoleModels\Details.cshtml" />
     <Content Include="Views\RoleModels\Edit.cshtml" />
     <Content Include="Views\RoleModels\Index.cshtml" />
+    <Content Include="Views\Home\_Gridview.cshtml" />
+    <Content Include="Views\Categories\_GridViewCategory.cshtml" />
+    <Content Include="Views\Brands\_GridViewBrand.cshtml" />
+    <Content Include="Views\Products\_GridViewProduct.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Vendor\" />
+    <Folder Include="Img\" />
     <Folder Include="Views\Role\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
@@ -379,14 +395,17 @@
     <EmbeddedResource Include="Migrations\202107060258217_ApplyProduct.resx">
       <DependentUpon>202107060258217_ApplyProduct.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107060843284_Role.resx">
-      <DependentUpon>202107060843284_Role.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202107100819186_FixBrand.resx">
+      <DependentUpon>202107100819186_FixBrand.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107060856382_Role1.resx">
-      <DependentUpon>202107060856382_Role1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202107120144556_ProductImage.resx">
+      <DependentUpon>202107120144556_ProductImage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107060908350_Role2.resx">
-      <DependentUpon>202107060908350_Role2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202107120306319_fix.resx">
+      <DependentUpon>202107120306319_fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107130816332_fixProductMultipleImage.resx">
+      <DependentUpon>202107130816332_fixProductMultipleImage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

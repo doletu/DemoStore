@@ -51,9 +51,10 @@ namespace DemoStore_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 db.Orders.Add(order);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Create", "OrderDetails", new { area = "" });
             }
 
             return View(order);
@@ -124,5 +125,11 @@ namespace DemoStore_Admin.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+
+
+
+    
     }
 }

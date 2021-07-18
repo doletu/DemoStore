@@ -20,11 +20,16 @@ namespace DemoStore_Admin
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+                 "~/Asset/scripts.js",
+                
+                "~/Scripts/bootstrap.js"));
+
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                       "~/Content/Site.css",
+                      "~/Content/styles.css"));
+
+
         }
     }
 }

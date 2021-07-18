@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using DemoStore_Admin.Models;
 using DemoStore_Admin.Models.Prduct;
+using DemoStore_Admin.Models.ViewModels;
+using PagedList;
 
 namespace DemoStore_Admin.Controllers
 {
@@ -16,9 +21,19 @@ namespace DemoStore_Admin.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Categories
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int PageSize = 4)
         {
-            return View(db.Categories.ToList());
+
+            var listcate= db.Categories.ToList().Select(p => new CategoryViewModel()
+
+                {
+                    Id = p.Id,
+                    Name=p.Name,
+                    CoverImage=p.CoverImage
+                });
+
+            PagedList<CategoryViewModel> model = new PagedList<CategoryViewModel>(listcate, page, PageSize);
+            return View(model);
         }
 
         // GET: Categories/Details/5
@@ -47,12 +62,36 @@ namespace DemoStore_Admin.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,CoverImage")] Category category)
+        public ActionResult Create([Bind(Include = "Id,Name,CoverImage")] Category category, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
+
+
+                var url = file.ToString(); //getting complete url  
+
+                var fileName = Path.GetFileName(file.FileName); //getting only file name(ex-ganesh.jpg)  
+                var ext = Path.GetExtension(file.FileName); //getting the extension(ex-.jpg)  
+
+                string name = Path.GetFileNameWithoutExtension(fileName); //getting file name without extension  
+
+                string myfile = name + "_" + category.Name + ext; //appending the name with id  
+
+                // store the file inside ~/project folder(Img)  
+                var path = Path.Combine(Server.MapPath("~/Img"), myfile);
+
+                category.CoverImage = myfile;
+
+
+
+
+
+
+
                 db.Categories.Add(category);
                 db.SaveChanges();
+                file.SaveAs(path);
+
                 return RedirectToAction("Index");
             }
 
@@ -79,50 +118,80 @@ namespace DemoStore_Admin.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,CoverImage")] Category category)
+        public ActionResult Edit([Bind(Include = "Id,Name,CoverImage")] Category category, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
+                var cate = db.Categories.Find(category.Id);
+                if (cate!=null)
+                {
+                    cate.Name = category.Name;
+                };
+                if (file!=null)
+                {
+                    var url = file.ToString(); //getting complete url  
+
+                    var fileName = Path.GetFileName(file.FileName); //getting only file name(ex-ganesh.jpg)  
+                    var item = db.Categories.Find(category.Id).CoverImage;
+                    if (!fileName.Contains(item))
+                    {
+                        var ext = Path.GetExtension(file.FileName); //getting the extension(ex-.jpg)  
+
+                        string name = Path.GetFileNameWithoutExtension(fileName); //getting file name without extension  
+
+                        string myfile = name + "_" + category.Name + ext; //appending the name with id  
+
+                        // store the file inside ~/project folder(Img)  
+                        var path = Path.Combine(Server.MapPath("~/Img"), myfile);
+
+                        cate.CoverImage = myfile;
+
+
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(category);
         }
 
-        // GET: Categories/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Category category = db.Categories.Find(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            return View(category);
-        }
 
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public ActionResult DeleteCate(int id)
         {
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
+
+            var item = db.Categories.Find(id);
+
+            if (item == null)
+            {
+                ViewBag.ErrorMessage = "Cannot be found";
+                return (ActionResult)View("NotFound");
+            }
+            var result = db.Categories.Remove(item);
             db.SaveChanges();
+
             return RedirectToAction("Index");
+
         }
 
-        protected override void Dispose(bool disposing)
+
+
+        public PartialViewResult SearchCategories(string searchText, int page = 1, int PageSize = 4)
         {
-            if (disposing)
+            var listcate = db.Categories.ToList().Select(p => new CategoryViewModel()
+
             {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+                Id = p.Id,
+                Name = p.Name,
+                CoverImage = p.CoverImage
+            });
+
+            var Filter = listcate.Where(a => a.Name.ToLower().Contains(searchText)).ToList();
+
+            PagedList<CategoryViewModel> model = new PagedList<CategoryViewModel>(Filter, page, PageSize);
+            return PartialView("_GridViewCategory", model);
         }
     }
+
+
 }

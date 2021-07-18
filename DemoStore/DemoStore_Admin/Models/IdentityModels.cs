@@ -17,10 +17,10 @@ namespace DemoStore_Admin.Models
         public DbSet<Category> Categories  { get; set; }
         public DbSet<Order> Orders  { get; set; }
         public DbSet<OrderDetail> Details  { get; set; }
+        public DbSet<ProductImages> ProductImages { get; set; }
 
 
-
-    public ApplicationDbContext()
+        public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
@@ -30,7 +30,6 @@ namespace DemoStore_Admin.Models
             return new ApplicationDbContext();
         }
 
-    
     }
     public class ApplicationRole : IdentityRole
     {

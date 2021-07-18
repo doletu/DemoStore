@@ -12,7 +12,6 @@ namespace DemoStore_Admin
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            
         }
 
 

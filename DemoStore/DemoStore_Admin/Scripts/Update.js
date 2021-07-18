@@ -1,26 +1,37 @@
-﻿function CofirmDelete(Id) {
-    $("#myModal").modal('show');
-    $("#Id").val(Id);
+﻿$(document).ready(function () {
 
-}
+    $("#imageBrowes").change(function () {
 
-function DeleteAccount() {
+        var File = this.files;
 
-    $("#loaderDiv").show();
-    var Id = $("#Id").val();
-    $.ajax({
-
-        type: "POST",
-        url: "/Home/Delete",
-        data: { UserId: Id },
-        success: function (result) {
-            $("#loaderDiv").hide();
-            $("#myModal").modal("hide");
-            $("#row_" + Id).remove();
-
+        if (File && File[0]) {
+            ReadImage(File[0]);
         }
 
     })
 
+
+})
+
+
+var ReadImage = function (file) {
+
+    var reader = new FileReader;
+    var image = new Image;
+
+    reader.readAsDataURL(file);
+    reader.onload = function (_file) {
+
+        image.src = _file.target.result;
+        image.onload = function () {
+
+        
+            $("#targetImg").attr('src', _file.target.result);
+            $("#targetImg").attr("style", "height:150px;width: 150px;");
+           $("#imgPreview").show();
+
+        }
+
+    }
+
 }
- 

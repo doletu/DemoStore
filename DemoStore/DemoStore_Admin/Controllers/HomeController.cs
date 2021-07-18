@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNetCore.Http;
 using System.Web.Security;
+using System.Net;
 
 namespace DemoStore_Admin.Controllers
 {
@@ -19,7 +20,7 @@ namespace DemoStore_Admin.Controllers
     {
         private ApplicationDbContext dbContext = new ApplicationDbContext();
     
-        public ActionResult Index(int page=1,int PageSize=3)
+        public ActionResult Index(int page=1,int PageSize=4)
         {
             var usersWithRoles = (from user in dbContext.Users
                                   select new
@@ -48,19 +49,6 @@ namespace DemoStore_Admin.Controllers
             return View(model);
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
        
         public ActionResult Settings(string UserId)
         {
@@ -125,11 +113,13 @@ namespace DemoStore_Admin.Controllers
 
             }
 
-            ViewBag.VbCategoryList = list;
+            var selectedCustomerType = list.FirstOrDefault(d => d.Value == view.Role);
+            if (selectedCustomerType != null)
+                selectedCustomerType.Selected = true;
+         
 
 
 
-           
             ApplicationUserManager userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(dbContext));
             var users = dbContext.Users.FirstOrDefault(p => p.Id == view.Id);
             if (users != null)
@@ -144,20 +134,19 @@ namespace DemoStore_Admin.Controllers
                 users.PhoneNumber = view.PhoneNumber;
 
 
+                
                 foreach (var item in list)
                 {
-                    if (await userManager.IsInRoleAsync(users.Id, item.Text) && !(view.Role==item.Text))
+
+                    if (await userManager.IsInRoleAsync(users.Id, item.Text))
                     {
                         await userManager.RemoveFromRoleAsync(users.Id, item.Text);
                     }
-                    else
-                    {
-                        await userManager.AddToRoleAsync(users.Id, item.Text);
-
-                    }
-
+             
                 }
-                
+
+                await userManager.AddToRoleAsync(users.Id,selectedCustomerType.Text);
+
 
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
@@ -195,33 +184,54 @@ namespace DemoStore_Admin.Controllers
 
         }
 
-
-        public async Task<IActionResult> Update(string id)
+        // GET: Categories/Details/5
+        public ActionResult Details(string id)
         {
-            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
-
-            ApplicationUser user = await userManager.FindByIdAsync((string)id);
-            if (user != null)
-                return (IActionResult)View();
-            else
-                return (IActionResult)RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update(ViewMainPageModel viewMain)
-        {
-            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
-
-            ApplicationUser user = await userManager.FindByIdAsync(viewMain.Id);
-            if (user != null)
+            if (id == null)
             {
-               
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            else
-                ModelState.AddModelError("", "User Not Found");
-            return (IActionResult)View(user);
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
         }
 
+
+
+        public PartialViewResult SearchUsers(string searchText, int page = 1, int PageSize = 4)
+        {
+            var User = (from user in dbContext.Users
+                        select new
+                        {
+                            UserId = user.Id,
+                            Username = user.UserName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            DataCreated = user.DateCreated,
+                            RoleNames = (from userRole in user.Roles
+                                         join role in dbContext.Roles on userRole.RoleId
+                                         equals role.Id
+                                         select role.Name).ToList()
+                        }).ToList().Select(p => new ViewMainPageModel()
+
+                        {
+                            Id = p.UserId,
+                            UserName = p.Username,
+                            DateCreated = p.DataCreated,
+                            PhoneNumber = p.PhoneNumber,
+                            Email = p.Email,
+                            Role = string.Join(",", p.RoleNames)
+                        });
+
+            var Filter = User.Where(a => a.Email.ToLower().Contains(searchText) ||
+                                             a.Email.Contains(searchText)).ToList();
+
+            PagedList<ViewMainPageModel> model = new PagedList<ViewMainPageModel>(Filter, page, PageSize);
+            return PartialView("_Gridview", model);
+        }
     }
 
 
