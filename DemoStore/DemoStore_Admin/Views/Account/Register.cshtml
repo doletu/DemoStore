@@ -28,7 +28,7 @@
                 <div class="form-group has-error">
                     <input type="text" class="form-control" name="Name" placeholder="Name" required="required">
 
-
+                    @Html.ValidationMessageFor(model => model.Name)
                 </div>
 
 
@@ -36,24 +36,25 @@
                 <div class="form-group has-error">
 
                     <input type="text" class="form-control" name="Email" placeholder="Email" required="required">
+                    @Html.ValidationMessageFor(model => model.Email)
                 </div>
 
                 <div class="form-group has-error">
 
                     <input type="text" class="form-control" name="Password" placeholder="Password" required="required">
-
+                    @Html.ValidationMessageFor(model => model.Password)
                 </div>
 
                 <div class="form-group has-error">
 
                     <input type="text" class="form-control" name="ConfirmPassword" placeholder="ConfirmPassword" required="required">
-
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword)
                 </div>
 
                 <div class="form-group has-error">
 
                     <input type="text" class="form-control" name="PhoneNumber" placeholder="PhoneNumber" required="required">
-
+                    @Html.ValidationMessageFor(model => model.PhoneNumber)
                 </div>
 
                 <div class="input-group mb-3">

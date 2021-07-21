@@ -12,56 +12,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNetCore.Http;
 using System.Web.Security;
+using System.Net;
 
 namespace DemoStore_Admin.Controllers
 {
     public class HomeController : Controller
     {
         private ApplicationDbContext dbContext = new ApplicationDbContext();
-    
-        public ActionResult Index(int page=1,int PageSize=3)
-        {
-            var usersWithRoles = (from user in dbContext.Users
-                                  select new
-                                  {
-                                      UserId = user.Id,
-                                      Username = user.UserName,
-                                      Email = user.Email,
-                                      PhoneNumber = user.PhoneNumber,
-                                      DataCreated=user.DateCreated,
-                                      RoleNames = (from userRole in user.Roles
-                                                   join role in dbContext.Roles on userRole.RoleId
-                                                   equals role.Id
-                                                   select role.Name).ToList()
-                                  }).ToList().Select(p => new ViewMainPageModel()
 
-                                  {
-                                      Id = p.UserId,
-                                      UserName = p.Username,
-                                      DateCreated = p.DataCreated,
-                                      PhoneNumber=p.PhoneNumber,
-                                      Email = p.Email,
-                                      Role = string.Join(",", p.RoleNames)
-                                  }) ;
 
-            PagedList<ViewMainPageModel> model = new PagedList<ViewMainPageModel>(usersWithRoles, page, PageSize);
-            return View(model);
-        }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-       
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult Settings(string UserId)
         {
 
@@ -77,7 +40,7 @@ namespace DemoStore_Admin.Controllers
                              RoleNames = (from userRole in user.Roles
                                           join role in dbContext.Roles on userRole.RoleId
                                           equals role.Id
-                                          select role.Name).ToList()
+                                          select role.Id).ToList()
                          }).ToList().Select(p => new ViewMainPageModel()
 
                          {
@@ -98,10 +61,7 @@ namespace DemoStore_Admin.Controllers
                         Text = Role.Name
                     });
 
-                }
-                var selectedCustomerType = list.FirstOrDefault(d => d.Text == users.Role);
-                if (selectedCustomerType != null)
-                 selectedCustomerType.Selected = true;
+                };
                 ViewBag.VbCategoryList = list;
 
                 return View(users);
@@ -110,6 +70,7 @@ namespace DemoStore_Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Settings(ViewMainPageModel  view)
         {
             var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
@@ -125,11 +86,13 @@ namespace DemoStore_Admin.Controllers
 
             }
 
-            ViewBag.VbCategoryList = list;
+            var selectedCustomerType = list.FirstOrDefault(d => d.Value == view.Role);
+            if (selectedCustomerType != null)
+                selectedCustomerType.Selected = true;
+         
 
 
 
-           
             ApplicationUserManager userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(dbContext));
             var users = dbContext.Users.FirstOrDefault(p => p.Id == view.Id);
             if (users != null)
@@ -144,20 +107,19 @@ namespace DemoStore_Admin.Controllers
                 users.PhoneNumber = view.PhoneNumber;
 
 
+                
                 foreach (var item in list)
                 {
-                    if (await userManager.IsInRoleAsync(users.Id, item.Text) && !(view.Role==item.Text))
+
+                    if (await userManager.IsInRoleAsync(users.Id, item.Text))
                     {
                         await userManager.RemoveFromRoleAsync(users.Id, item.Text);
                     }
-                    else
-                    {
-                        await userManager.AddToRoleAsync(users.Id, item.Text);
-
-                    }
-
+             
                 }
-                
+
+                await userManager.AddToRoleAsync(users.Id,selectedCustomerType.Text);
+
 
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
@@ -166,6 +128,7 @@ namespace DemoStore_Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> DeleteUser(string id)
         {
             ApplicationUserManager userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(dbContext));
@@ -195,33 +158,114 @@ namespace DemoStore_Admin.Controllers
 
         }
 
+        // GET: Categories/Details/5
 
-        public async Task<IActionResult> Update(string id)
+        [Authorize(Roles = "Admin,Manager")]
+        public ActionResult Details(string id)
         {
-            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
-
-            ApplicationUser user = await userManager.FindByIdAsync((string)id);
-            if (user != null)
-                return (IActionResult)View();
-            else
-                return (IActionResult)RedirectToAction("Index");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Update(ViewMainPageModel viewMain)
-        {
-            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
 
-            ApplicationUser user = await userManager.FindByIdAsync(viewMain.Id);
-            if (user != null)
+
+
+        [Authorize(Roles = "Admin,Manager")]
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        {
+            var User = (from user in dbContext.Users
+                        select new
+                        {
+                            UserId = user.Id,
+                            Username = user.UserName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            DataCreated = user.DateCreated,
+                            RoleNames = (from userRole in user.Roles
+                                         join role in dbContext.Roles on userRole.RoleId
+                                         equals role.Id
+                                         select role.Name).ToList()
+                        }).ToList().Select(p => new ViewMainPageModel()
+
+                        {
+                            Id = p.UserId,
+                            UserName = p.Username,
+                            DateCreated = p.DataCreated,
+                            PhoneNumber = p.PhoneNumber,
+                            Email = p.Email,
+                            Role = string.Join(",", p.RoleNames)
+                        });
+            //  the paging links in order to keep the sort order the same while paging
+            ViewBag.CurrentSort = sortOrder;
+            //Add ViewBag to save SortOrder of table
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            if (searchString != null)
             {
-               
+                page = 1;
             }
             else
-                ModelState.AddModelError("", "User Not Found");
-            return (IActionResult)View(user);
-        }
+            {
+                searchString = currentFilter;
+            }
 
+            ViewBag.CurrentFilter = searchString;
+
+
+
+
+
+            //Added this area to, Search and match data, if search string is not null or empty
+            if (!String.IsNullOrEmpty(searchString))
+            {
+              User = User.Where(s => s.UserName.Contains(searchString)
+                                       || s.Email.Contains(searchString));
+            }
+
+            //Switch action according to sortOrder
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    User = User.OrderByDescending(s => s.UserName).ToList();
+                    break;
+
+                default:
+                    User = User.OrderBy(s => s.UserName).ToList();
+                    break;
+            }
+
+
+
+
+            //ViewBag.CurrentFilter, provides the view with the current filter string.
+            //he search string is changed when a value is entered in the text box and the submit button is pressed. In that case, the searchString parameter is not null.
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+
+            //indicates the size of list
+            int pageSize = 3;
+            //set page to one is there is no value, ??  is called the null-coalescing operator.
+            int pageNumber = (page ?? 1);
+            //return the Model data with paged
+            return View(User.ToPagedList(pageNumber, pageSize));
+
+        }
     }
 
 

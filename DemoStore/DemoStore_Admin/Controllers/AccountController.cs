@@ -180,7 +180,7 @@ namespace DemoStore_Admin.Controllers
            
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, Name=model.Name, DateCreated=DateTime.Now, PhoneNumber=model.PhoneNumber };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name=model.Name, DateCreated=DateTime.Now, PhoneNumber=model.PhoneNumber };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

@@ -27,7 +27,6 @@ namespace DemoStore_Admin.Migrations
                         Price = c.Decimal(nullable: false, precision: 18, scale: 2),
                         Discount = c.Int(nullable: false),
                         Description = c.String(maxLength: 255),
-                        CoverImage = c.String(nullable: false),
                         Stock = c.Int(nullable: false),
                         ViewCount = c.Int(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
@@ -78,7 +77,14 @@ namespace DemoStore_Admin.Migrations
                         status = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
-            
+            CreateTable(
+                "dbo.ProductImages",
+                c => new
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    img = c.String(),
+                })
+                .PrimaryKey(t => t.Id);
         }
         
         public override void Down()
@@ -96,6 +102,7 @@ namespace DemoStore_Admin.Migrations
             DropTable("dbo.Categories");
             DropTable("dbo.Products");
             DropTable("dbo.Brands");
+            DropTable("dbo.ProductImages");
         }
     }
 }

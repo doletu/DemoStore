@@ -1,0 +1,56 @@
+﻿
+@using PagedList.Mvc;
+@model PagedList.IPagedList<DemoStore_Admin.Models.ViewModels.CategoryViewModel>
+
+
+<script>
+    $(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+
+
+<table id="myTable" class="table table-striped table-hover">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Cover Image
+        </th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr class='clickable-row' data-href="@Url.Action("Details","Categories", new {Id=item.Id })">
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <img src="~/Img/@item.CoverImage" style=" height:150px;
+                                                     width:150px " />
+            </td>
+            <td>
+
+                @using (Html.BeginForm("DeleteCate", "Categories", new { Id = item.Id }, FormMethod.Post, new { role = "form" }))
+                {
+                    <a href="@Url.Action("Edit","Categories", new {Id=item.Id })" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
+
+                    <button onclick="return confirm('Do You Want to Delete This Category')" class="delete " title="Delete" data-toggle="tooltip"
+                            style="background-color: Transparent; outline: none; border:0; color:red">
+                        <i class="material-icons">&#xE5C9;</i>
+                    </button>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, pagesize = Model.PageSize }))
+                                Showing @Model.FirstItemOnPage to @Model.LastItemOnPage of @Model.TotalItemCount Account

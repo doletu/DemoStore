@@ -1,0 +1,70 @@
+﻿
+@using PagedList.Mvc;
+@model PagedList.IPagedList<DemoStore_Admin.Models.ViewModels.ProductViewModel>
+
+
+
+
+
+
+
+<table id="myTable" class="table table-striped table-hover">
+    <tr>
+        <th>
+            Name
+        </th>
+
+        <th>
+            Brand Name
+        </th>
+        <th>
+            Category Name
+        </th>
+        <th>
+            Price
+        </th>
+
+        <th>
+            Stock
+        </th>
+        <th>
+            CoverImage
+        </th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.Brand)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Category)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Price) đ
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Stock)
+    </td>
+    <td>
+        <img src="~/Img/@item.CoverImage" style=" height:150px;
+                                                             width:150px " />
+    </td>
+    <td>
+
+        <a class="btn btn-warning" >Add to Cart</a>
+    </td>
+</tr>
+    }
+</table>
+
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, pagesize = Model.PageSize }))
+                                Showing @Model.FirstItemOnPage to @Model.LastItemOnPage of @Model.TotalItemCount Account
+

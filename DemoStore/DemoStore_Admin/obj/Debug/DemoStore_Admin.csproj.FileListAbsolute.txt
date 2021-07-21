@@ -134,7 +134,9 @@ C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\bin\System.Numeri
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\bin\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\bin\System.Text.Encodings.Web.xml
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.ApplyProduct.resources
-C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.Role.resources
-C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.Role1.resources
-C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.Role2.resources
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.FixBrand.resources
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.ProductImage.resources
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.fix.resources
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.fixProductMultipleImage.resources
 C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.csprojAssemblyReference.cache
+C:\Users\Tu\OneDrive\Máy tính\DoAn\DemoStore\DemoStore_Admin\obj\Debug\DemoStore_Admin.Migrations.fixorder.resources

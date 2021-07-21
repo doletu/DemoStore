@@ -2081,8 +2081,9 @@ progress {
 }
 
 .table-responsive, .dataTable-wrapper .dataTable-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: ridge;
 }
 
 @media (max-width: 575.98px) {
@@ -11509,3 +11510,5 @@ table.table .avatar {
         .login-form form a:hover {
             text-decoration: underline;
         }
+
+

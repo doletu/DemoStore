@@ -75,6 +75,8 @@ namespace DemoStore_Admin.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
+
+
         [Required]
         [Phone]
         [Display(Name = "PhoneNumber")]
