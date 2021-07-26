@@ -81,7 +81,7 @@
                                     </td>
                                     <td>
                                         <img src="~/Img/@item.CoverImage" style=" height:150px;
-                                                     width:150px " />
+                                                     width:150px " alt="Image"/>
                                     </td>
                                     <td>
 
@@ -129,35 +129,3 @@
         </div>
     </footer>
 </div>
-
-
-<script>
-
-
-     $(() => {
-
-        getUsers();
-
-        $('#txtSearch').on('keyup', () => {
-            getUsers();
-        });
-     });
-
-
-    function getUsers() {
-
-        $.ajax({
-            url: '@Url.Action("SearchCategories", "Categories")',
-            dataType: 'html',
-            method: 'Get',
-            data: { searchText: $('#txtSearch').val() },
-            success: function (res) {
-                $('#grdCategory').html('').html(res);
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
-
-    };
-</script>

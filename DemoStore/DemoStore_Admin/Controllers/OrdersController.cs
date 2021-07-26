@@ -10,12 +10,13 @@ using DemoStore_Admin.Models;
 using DemoStore_Admin.Models.Prduct;
 using DemoStore_Admin.Models.ViewModels;
 using PagedList;
-
+using Microsoft.AspNet.Identity;
 namespace DemoStore_Admin.Controllers
 {
     public class OrdersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
 
 
         // GET: Orders/Details/5
@@ -27,6 +28,31 @@ namespace DemoStore_Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Order order = db.Orders.Find(id);
+            string userId = User.Identity.GetUserId();
+            var list = db.Details.Include("Brand").Include("Category").Where(p => p.OrderId == order.Id).ToList();
+            List<DetailViewModel> listproduct = new List<DetailViewModel>();
+            decimal total = 0;
+            foreach (var item in list)
+            {
+                var Itemcart = db.Products.Find(item.ProductId);
+                if (Itemcart!=null)
+                {
+                    listproduct.Add(new DetailViewModel()
+                    {
+                         Id=   Itemcart.Id,
+                         Brand=Itemcart.Brand.Name,
+                         Category=Itemcart.Category.Name,
+                         Quantity=item.Quantity,
+                         Price=Itemcart.Price,
+                         CoverImage=Itemcart.CoverImage
+                    });
+                    total += Itemcart.Price * item.Quantity;
+                }
+            }
+
+                ViewData["Product"] = listproduct;
+            ViewBag.Total = total;
+
             if (order == null)
             {
                 return HttpNotFound();
@@ -35,26 +61,58 @@ namespace DemoStore_Admin.Controllers
         }
 
         // GET: Orders/Create
-        [Authorize(Roles = "Admin,Manager")]
+       [Authorize]
         public ActionResult Create()
         {
+            IList<Product> products = db.Products.SqlQuery("Select * from Products").ToList();
+            ViewData["Product"] = products;
+
             return View();
         }
 
-        // POST: Orders/Create
+        // POST: Orders/Create [Bind(Include = "Id,OrderDate,UserId,ShipName,ShipAddress,ShipPhoneNumber,status")] Order order
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
-        public ActionResult Create([Bind(Include = "Id,OrderDate,UserId,ShipName,ShipAddress,ShipPhoneNumber,status")] Order order)
+        //[Authorize(Roles = "Admin,Manager")]
+        public ActionResult Create(OrderViewModel order)
         {
             if (ModelState.IsValid)
             {
-               
-                db.Orders.Add(order);
+                Order item = new Order()
+                {
+                    OrderDate = DateTime.Now,
+                    ShipAddress = order.ShipAddress,
+                    ShipName = order.ShipName,
+                    ShipPhoneNumber = order.ShipPhoneNumber,
+                    status = order.status,
+                    UserId = User.Identity.GetUserId(),                    
+                };
+                db.Orders.Add(item);
                 db.SaveChanges();
-                return RedirectToAction("Create", "OrderDetails", new { area = "" });
+                if (order.details!=null)
+                {
+                    var itemorder = db.Orders.Find(item);
+                    foreach (var cart in order.details)
+                    {
+                        var cartItem = db.Products.Find(cart.Id);
+                        db.Details.Add(new OrderDetail()
+                        {
+                             OrderId=itemorder.Id,
+                             ProductId=cart.Id,
+                             Quantity=cart.Quantity,
+                             Price=cart.Quantity* cartItem.Price
+
+                        });
+                        
+                    }
+                    db.SaveChanges();
+
+                }
+
+
+                return RedirectToAction("Index");
             }
 
             return View(order);
@@ -69,6 +127,7 @@ namespace DemoStore_Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Order order = db.Orders.Find(id);
+            order.OrderDetails = db.Details.Where(p => p.OrderId == order.Id).ToList();
             if (order == null)
             {
                 return HttpNotFound();

@@ -15,8 +15,7 @@ namespace DemoStore_Admin.Models.ViewModels
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime OrderDate { get; set; }
-
-        [Required]
+        
         public string UserId { get; set; }
 
         [Required]
@@ -29,5 +28,7 @@ namespace DemoStore_Admin.Models.ViewModels
         [Required]
         public int status { get; set; }
 
+
+        public List<DetailViewModel> details { get; set; }
     }
 }

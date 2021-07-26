@@ -1,0 +1,192 @@
+﻿@using DemoStore_Admin.Models.Prduct
+
+
+@{
+
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+
+
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="~/Content/Vendor/styles.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Header-->
+<header class="masthead">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <!-- Page heading-->
+                    <h1 class="mb-5">Generate more leads with a professional landing page!</h1>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="text-center">
+                    <h2 class="fw-bolder">Product</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var item in ViewData["Product"] as IList<Product>)
+            {
+                <div class="col mb-5" onclick="location.href='@Url.Action("DetailsProduct","Page", new {Id=item.Id })'">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" src="~/Img/@item.CoverImage" style="height: 100%; width: 100%; object-fit: cover;" alt="..." />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder">@item.Name</h5>
+                                <!-- Product price-->
+                                @item.Price đ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+        </div>
+    </div>
+</section>
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/choccolate_cake.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">Choccolate Cake</h3>
+                    <h4 class="card-text">$100</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/green_shoe.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">Green Shoe</h3>
+                    <h4 class="card-text">$80</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/hamburger.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">Hamburger</h3>
+                    <h4 class="card-text">$50</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/pink_shoe.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">Pink Shoe</h3>
+                    <h4 class="card-text">$100</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/shirt.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">T Shirt</h3>
+                    <h4 class="card-text">$30</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-md-4 col-lg-4'>
+            <div class="card" style="width: 18rem;">
+                <img src="img/strawberry_cake.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">Strawberry Cake</h3>
+                    <h4 class="card-text">$100</h4>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="uk-overflow-auto container" style='width: 70%'>
+    <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+        <thead>
+            <tr>
+                <th class="uk-table-shrink"></th>
+                <th class="uk-table-small sty"><h3>ITEM</h3></th>
+                <th class="uk-table-small"></th>
+                <th class="uk-width-small sty"><h3>PRICE</h3></th>
+                <th class="uk-table-shrink uk-text-small sty"><h3>QUANTITY</h3></th>
+                <th class="uk-table-shrink uk-text-small sty"><h3>TOTAL</h3></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input class="uk-checkbox" type="checkbox"></td>
+                <td><img class="uk-preserve-width uk-border-circle" src="img/strawberry_cake.jpg" width="40" alt=""></td>
+                <td class="uk-table-link">
+                    <h3 class="item-name">Strawberry Cake</h3>
+                </td>
+                <td class="uk-text-truncate item-price"><h3>$100</h3></td>
+                <td><input type='number' class='num' value='1'></td>
+                <td class="uk-text-truncate total-price"><h3>$100</h3></td>
+                <td><button class="uk-button uk-button-danger" type="button">Remove</button></td>
+            </tr>
+
+
+        </tbody>
+        <tr>
+            <td><input class="uk-checkbox" type="checkbox"></td>
+            <td><img class="uk-preserve-width uk-border-circle" width="40" alt=""></td>
+            <td class="uk-table-link">
+                <h3 class="item-name"><strong>Grand-Total</strong></h3>
+            </td>
+            <td class="uk-text-truncate"><h3></h3></td>
+            <td class="uk-text-truncate"><h3></h3></td>
+            <td class="uk-text-truncate grand-total"><h3><strong>$0</strong></h3></td>
+
+        </tr>
+    </table>
+</div>
+
+
+
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+</footer>
+
+<script src='~/Scripts/ShoppingCart.js'></script>

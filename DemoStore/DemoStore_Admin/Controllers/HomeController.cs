@@ -21,7 +21,15 @@ namespace DemoStore_Admin.Controllers
         private ApplicationDbContext dbContext = new ApplicationDbContext();
 
 
+        public ActionResult Dash()
+        {
+            ViewBag.Users = dbContext.Users.Count();
+            ViewBag.Products = dbContext.Products.Count();
+            ViewBag.Brand = dbContext.Brands.Count();
+            ViewBag.Category = dbContext.Categories.Count();
 
+            return View();
+        }
 
 
         [Authorize(Roles = "Admin,Manager")]

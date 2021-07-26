@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNet.Identity
+
+
+@if (Request.IsAuthenticated)
+{
+
+    if (@User.IsInRole("User"))
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <form class="d-flex">
+                <a>
+                    Hello:    @User.Identity.GetUserName()
+                </a>
+                <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-outline-dark">Log Out</a>
+
+
+                <hr />
+            </form>
+        }
+    }
+else
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <form class="d-flex">
+        <a>
+            Hello:     @User.Identity.GetUserName()
+        </a>
+        <a href = "javascript:document.getElementById('logoutForm').submit()" class="btn btn-outline-dark">Log Out</a>
+
+        <a href = "@Url.Action("Index", "Home", routeValues: null)" class="btn btn-outline-dark">Manager</a>
+
+        <hr />
+        </form>
+
+    }
+}
+
+}
+else
+{
+
+<form class="d-flex">
+    <hr />
+    <ul class="nav navbar-nav navbar-right">
+        <li class="btn btn-outline-dark">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li class="btn btn-outline-dark">@Html.ActionLink("Log in", "Login", "Account", routeValues: "Page/Index", htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+
+</form>
+
+
+
+}

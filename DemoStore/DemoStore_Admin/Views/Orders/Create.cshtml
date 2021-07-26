@@ -1,4 +1,5 @@
 ﻿@model DemoStore_Admin.Models.ViewModels.OrderViewModel
+@using DemoStore_Admin.Models.Prduct
 
 @{
     ViewBag.Title = "Create";
@@ -23,8 +24,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
-
+    <link href="~/Content/Vendor/CartStyles.css" rel="stylesheet" />
 }
 
 
@@ -49,7 +49,7 @@
 
 
 
-                        @using (Html.BeginForm())
+                        @using (Html.BeginForm("Create", "Orders", FormMethod.Post, new { @id = "formPost" }))
                         {
                             @Html.AntiForgeryToken()
 
@@ -61,14 +61,6 @@
                                     <div class="col-md-10">
                                         @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
                                         @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    Customer
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -108,39 +100,73 @@
                                     </div>
                                 </div>
                                 <hr />
-
-                                <!-- Navbar Search-->
-                                <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                                    <div class="input-group">
-                                        <input class="form-control" type="text" id="txtSearch" placeholder="Search for.." title="Type in" />
+                                <div class='container'>
+                                    <div class='row'>
+                                        @foreach (var item in ViewData["Product"] as IList<Product>)
+                                        {
+                                            <div class='col-md-4'>
+                                                <div class="card">
+                                                    <img src="~/Img/@item.CoverImage"  class="card-img-top" alt="...">
+                                                    <input type="hidden"  class="id"  name="" value="@item.Id" />
+                                                    <div class="card-body">
+                                                        <h3 class="card-title">@item.Name</h3>
+                                                        <h4 class="card-text">@item.Price đ</h4>
+                                                        <a class="btn btn-primary" >Add to Cart</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
 
                                     </div>
-                                </form>
-                                <div id="grdProduct"></div>
-
+                                </div>
                                 <hr />
-                                <div class="uk-overflow-auto container" style='width: 70%'>
-                                    <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+                                <div class="table-title">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h2>List <b>Product</b></h2>
+                                        </div>
 
+                                    </div>
+                                </div>
+                                <div class="uk-overflow-auto container" style='width: 70%'>
+                                    <table id="tablePost" class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+                                        <thead>
+                                            <tr>
+                                                <th class="uk-table-shrink"></th>
+                                                <th class="uk-table-small sty"><h3>ITEM</h3></th>
+                                                <th class="uk-table-small"></th>
+                                                <th class="uk-width-small sty"><h3>PRICE</h3></th>
+                                                <th class="uk-table-small sty"><h3>QUANTITY</h3></th>
+                                                <th class="uk-table-small sty"><h3>TOTAL</h3></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="item"></tbody>
                                         <tr>
-                                            <th class="uk-table-shrink"></th>
-                                            <th class="uk-table-small sty"><h3>ITEM</h3></th>
-                                            <th class="uk-table-small"></th>
-                                            <th class="uk-width-small sty"><h3>PRICE</h3></th>
-                                            <th class="uk-table-shrink uk-text-small sty"><h3>QUANTITY</h3></th>
-                                            <th class="uk-table-shrink uk-text-small sty"><h3>TOTAL</h3></th>
+                                            <td><input class="uk-checkbox" type="checkbox"></td>
+                                            <td class="uk-table-link">
+                                                <h3 class="item-name"><strong>Grand-Total</strong></h3>
+                                            </td>
+                                            <td class="uk-text-truncate"><h3></h3></td>
+                                            <td class="uk-text-truncate"><h3></h3></td>
+                                            <td class="uk-text-truncate grand-total"><h3><strong>0 đ</strong></h3></td>
 
                                         </tr>
-
-                                        <tbody>
-                                        </tbody>
                                     </table>
                                 </div>
 
 
+
+
+
+
                                 <div class="form-group">
                                     <div class="col-md-offset-2 col-md-10">
-                                        <input type="submit" value="Create" class="btn btn-primary btn-lg btn-block" />
+                                        <label>&nbsp;</label>
+                                        <button id="buttonPost" type="submit"
+                                                class="btn btn-outline-primary">
+                                            Create
+                                        </button>
                                     </div>
                                 </div>
 
@@ -174,141 +200,54 @@
 
 </div>
 
+
+
 <script>
-         $(() => {
-             let addToCartButtons = document.getElementsByClassName('btn-warning')
-             let cartContainer = document.getElementsByTagName('tbody')[0]
-             let quantityFields = document.getElementsByClassName('num')
-             let delete_buttons = document.getElementsByClassName('uk-button-danger')
-        getUsers();
-             // picking up all the Add-To-Cart buttons
-             for (let i = 0; i < addToCartButtons.length; i++) {
-                 addToCartButtons[i].addEventListener('click', addToCart)
+    $("body").on("click", "#btnSave", function () {
+        //Loop through the Table rows and build a JSON array.
+        var customers = new Array();
+        $("#tblCustomers TBODY TR").each(function () {
+            var row = $(this);
+            var customer = {};
+            customer.Name = row.find("TD").eq(0).html();
+            customer.Country = row.find("TD").eq(1).html();
+            customers.push(customer);
+        });
 
-             }
-        $('#txtSearch').on('keyup', () => {
-            getUsers();
-            // picking up all the Add-To-Cart buttons
-            for (let i = 0; i < addToCartButtons.length; i++) {
-                addToCartButtons[i].addEventListener('click', addToCart)
-
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: "/Orders/Create",
+            data: JSON.stringify(customers),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) inserted.");
             }
         });
-     });
-
-
-    function getUsers() {
-
-        $.ajax({
-            url: '@Url.Action("SearchProducts", "Orders")',
-            dataType: 'html',
-            method: 'Get',
-            data: { searchText: $('#txtSearch').val() },
-            success: function (res) {
-                $('#grdProduct').html('').html(res);
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
-
-    };
-
-
-
-    $(function () { // will trigger when the document is ready
-        $('.datepicker').datepicker(); //Initialise any date pickers
     });
-
-
-   
-    // This function helps to add items to our cart
-    function addToCart(event) {
-
-        let btn = event.target
-        let btnParent = btn.parentElement
-        let itemImage = btnParent.getElementsByTagName("td")[5].src
-        let itemName = btnParent.getElementsByTagName("td")[0].innerText
-        let itemPrice = btnParent.getElementsByTagName("td")[4].innerText
-
-        let itemContainer = document.createElement('tr')
-
-        itemContainer.innerHTML = `
-    <td><input class="uk-checkbox" type="checkbox"></td>
-    <td><img class="uk-preserve-width uk-border-circle" src=${itemImage} width="40" alt=""></td>
-    <td class="uk-table-link">
-        <h3 class = "item-name">${itemName}</h3>
-    </td>
-    <td class="uk-text-truncate item-price"><h3>${itemPrice}</h3></td>
-    <td><input type = 'number' class = 'num' value = '1'></td>
-    <td class="uk-text-truncate total-price"><h3>${itemPrice}</h3></td>
-    <td><button class="uk-button uk-button-danger" type="button">Remove</button></td>`
-
-        cartContainer.append(itemContainer)
-
-
-        // Accessing individual quantity fields
-        for (let i = 0; i < quantityFields.length; i++) {
-            quantityFields[i].value = 1
-            quantityFields[i].addEventListener('change', totalCost)
-
-        }
-
-        // Accessing individual quantity fields
-        for (let i = 0; i < delete_buttons.length; i++) {
-            delete_buttons[i].addEventListener('click', removeItem)
-        }
-
-        grandTotal()
-
-
-    }
-
-
-
-    // This function helps to multiply the quantity and the price
-    function totalCost(event) {
-        let quantity = event.target
-        quantity_parent = quantity.parentElement.parentElement
-        price_field = quantity_parent.getElementsByClassName('item-price')[0]
-        total_field = quantity_parent.getElementsByClassName('total-price')[0]
-        price_field_content = price_field.innerText.replace('$', '')
-        total_field.children[0].innerText = '$' + quantity.value * price_field_content
-        grandTotal()
-        if (isNaN(quantity.value) || quantity.value <= 0) {
-            quantity.value = 1
-        }
-
-
-
-    }
-
-    // This function helps to add up the total of the items
-    function grandTotal() {
-        let total = 0
-        let grand_total = document.getElementsByClassName('grand-total')[0]
-        all_total_fields = document.getElementsByClassName('total-price')
-        for (let i = 0; i < all_total_fields.length; i++) {
-            all_prices = Number(all_total_fields[i].innerText.replace('$', ''))
-            total += all_prices
-        }
-        grand_total.children[0].innerText = "$" + total
-        grand_total.children[0].style.fontWeight = 'bold'
-        console.log(total)
-    }
-
-
-    function removeItem(event) {
-        del_btn = event.target
-        del_btn_parent = del_btn.parentElement.parentElement
-        del_btn_parent.remove()
-        console.log(del_btn)
-        grandTotal()
-
-    }
-
-
-
-
-
 </script>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#buttonPost").on("click", function () {
+            var listName = "details";
+
+            var qtd = 0;
+            $("#tablePost > #item > tr").each(function () {
+                var nome = $(".Productid").val();
+                var tel = $(".Quantity").val();
+                $("#formPost").prepend("<input type='hidden' name  = '" + listName + "[" + qtd + "].Id' 	value = '"+nome+"' > ");
+				$("#formPost").prepend("<input type='hidden' name = '" + listName + "[" + qtd + "].Quantity' value = '" + tel + "' > ");
+				qtd += 1;
+            });
+        });
+    });
+</script>
+
+
+<script src="~/Scripts/Cart.js"></script>

@@ -87,16 +87,17 @@
                                         <td>@item.Role</td>
                                         <td>@item.PhoneNumber</td>
                                         <td>
+                                            <div class="row">
+                                                @using (Html.BeginForm("DeleteUSer", "Home", new { Id = item.Id }, FormMethod.Post, new { role = "form" }))
+                                                {
+                                                    <a href="@Url.Action("Settings","Home", new {UserId=item.Id })" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
 
-                                            @using (Html.BeginForm("DeleteUSer", "Home", new { Id = item.Id }, FormMethod.Post, new { role = "form" }))
-                                            {
-                                                <a href="@Url.Action("Settings","Home", new {UserId=item.Id })" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
-
-                                                <button onclick="return confirm('Do You Want to Delete This Account')" class="delete " title="Delete" data-toggle="tooltip"
-                                                        style="background-color: Transparent; outline: none; border:0; color:red">
-                                                    <i class="material-icons">&#xE5C9;</i>
-                                                </button>
-                                            }
+                                                    <button onclick="return confirm('Do You Want to Delete This Account')" class="delete " title="Delete" data-toggle="tooltip"
+                                                            style="background-color: Transparent; outline: none; border:0; color:red">
+                                                        <i class="material-icons">&#xE5C9;</i>
+                                                    </button>
+                                                }
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -137,34 +138,3 @@
 </div>
 
 
-
-<script>
-
-
-     $(() => {
-
-        getUsers();
-
-        $('#txtSearch').on('keyup', () => {
-            getUsers();
-        });
-     });
-
-
-    function getUsers() {
-
-        $.ajax({
-            url: '@Url.Action("SearchUsers","Home")',
-            dataType: 'html',
-            method: 'Get',
-            data: { searchText: $('#txtSearch').val()},
-            success: function (res) {
-                $('#grdUsers').html('').html(res);
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
-
-    };
-</script>

@@ -1,0 +1,85 @@
+﻿@using DemoStore_Admin.Models.Prduct
+@model DemoStore_Admin.Models.Prduct.Product
+@{
+    ViewBag.Title = "DetailsProduct";
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+<!-- //tittle heading -->
+<div class="col-md-5 single-right-left ">
+    <div class="grid ///images_3_of_2">
+        <div class="flexslider">
+            <ul class="slides">
+                <li data-thumb="~/Img/@Model.CoverImage">
+                    <div class="thumb-image">
+                        <img src="~/Img/@Model.CoverImage" data-imagezoom="true" class="img-responsive" alt="">
+                    </div>
+                </li>
+                @foreach (var item in ViewData["Image"] as IList<ProductImages>)
+                {
+                    <li data-thumb="~/Img/@item.img">
+                        <div class="thumb-image">
+                            <img src="~/Img/@item.img" data-imagezoom="true" class="img-responsive" alt="">
+                        </div>
+                    </li>
+                }
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<div class="col-md-7 single-right-left simpleCart_shelfItem">
+    <h3>@Model.Name</h3>
+   
+    <p>
+        <span>@Model.Price đ</span>
+        <label>Free delivery</label>
+    </p>
+   
+</div>
+<div class="clearfix"> </div>
+
+
+
+@section Scripts {
+
+    <script src="~/Scripts/imagezoom.js"></script>
+    <script src="~/Scripts/jquery.flexslider.js"></script>
+    <script>
+
+        $(window).load(function () {
+            $('.flexslider').flexslider({
+                animation: "slide",
+                controlNav: "thumbnails"
+            });
+        });
+    </script>
+
+    <script src="js/jquery.flexisel.js"></script>
+    <script>
+        $(window).load(function () {
+            $("#flexiselDemo1").flexisel({
+                visibleItems: 3,
+                animationSpeed: 1000,
+                autoPlay: true,
+                autoPlaySpeed: 3000,
+                pauseOnHover: true,
+                enableResponsiveBreakpoints: true,
+                responsiveBreakpoints: {
+                    portrait: {
+                        changePoint: 480,
+                        visibleItems: 1
+                    },
+                    landscape: {
+                        changePoint: 640,
+                        visibleItems: 2
+                    },
+                    tablet: {
+                        changePoint: 768,
+                        visibleItems: 2
+                    }
+                }
+            });
+
+        });
+    </script>
+}

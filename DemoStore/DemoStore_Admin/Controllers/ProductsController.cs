@@ -22,7 +22,7 @@ namespace DemoStore_Admin.Controllers
 
 
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize]
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             var list = db.Products.Include("Brand").Include("Category").ToList().Select(p => new ProductViewModel()
@@ -110,7 +110,7 @@ namespace DemoStore_Admin.Controllers
 
 
         // GET: Products/Details/5
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -124,6 +124,9 @@ namespace DemoStore_Admin.Controllers
             {
                 return HttpNotFound();
             }
+                IList<ProductImages> images = db.ProductImages.Where(p => p.ProductId == id).ToList();
+                ViewData["Images"] = images;
+             
             return View(product);
         }
 

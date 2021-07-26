@@ -1,0 +1,76 @@
+﻿@using DemoStore_Admin.Models.Prduct
+
+
+@{
+
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+
+}
+
+
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="~/Content/Vendor/styles.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Header-->
+<header class="masthead">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <!-- Page heading-->
+                    <h1 class="mb-5">Style your Brand!</h1>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<!-- Blog preview section-->
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="text-center">
+                    <h2 class="fw-bolder">From our blog</h2>
+                    <p class="lead fw-normal text-muted mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row gx-5">
+            @foreach (var item in ViewData["Brand"] as IList<Brand>)
+            {
+                <div class="col-lg-4 mb-5" onclick="location.href='@Url.Action("DetailsBrand","Page", new {Id=item.Id })'">
+                    <div class="card h-100 shadow border-0">
+                        <img class="card-img-top" src="~/Img/@item.CoverImage" style="height: 100%; width: 100%; object-fit: cover;" alt="..." />
+                        <div class="card-body p-4">
+
+                            <a class="text-decoration-none link-dark stretched-link"><h5 class="card-title mb-3">@item.Name</h5></a>
+                            <p class="card-text mb-0">@item.Description</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+</footer>
